@@ -4,20 +4,39 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 
-G = nx.Graph()
+G = nx.DiGraph()
+
 def load_graph():
     global G
-    file_path = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv")])
-    if file_path:
+    file_path_edges = filedialog.askopenfilename(title="Open Edges CSV File",filetypes=[("CSV Files", "*.csv")])
+    if file_path_edges:
         try:
-            # Read CSV with pandas
-            df = pd.read_csv(file_path)
+            # Read edge CSV with pandas
+            df_edges = pd.read_csv(file_path_edges)
             # Create a graph from pandas DataFrame
-            G = nx.from_pandas_edgelist(df, 'Source', 'Target')
-            update_button.config(state=tk.NORMAL)
-            messagebox.showinfo("Success", "Graph loaded successfully!")
+            G = nx.from_pandas_edgelist(df_edges, 'Source', 'Target',create_using=G)
+            print(G.edges())
+            # Ask for node attributes CSV
+            file_path_attributes = filedialog.askopenfilename(title="Open Nodes CSV File",filetypes=[("CSV Files", "*.csv")])
+            if file_path_attributes:
+                # Read node attributes CSV with pandas
+                df_attributes = pd.read_csv(file_path_attributes)
+
+                # Add node attributes
+                for _, row in df_attributes.iterrows():
+                    node = row['ID']  # Adjusted to 'ID' column
+                    for column in df_attributes.columns:
+                        if column != 'ID':  # Adjusted to 'ID' column
+                            nx.set_node_attributes(G, {node: {column: row[column]}})
+                print(G.nodes(data=True))
+                update_button.config(state=tk.NORMAL)
+                messagebox.showinfo("Success", "Graph loaded successfully!")
+            else:
+                messagebox.showwarning("Warning", "No node attributes file selected.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load graph: {e}")
+
+
 def update_graph():
     global row
     plt.clf()
