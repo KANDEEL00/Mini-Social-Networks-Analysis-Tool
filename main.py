@@ -11,17 +11,18 @@ def load_graph():
             file_path_attributes = filedialog.askopenfilename(title="Open Nodes CSV File", filetypes=[("CSV Files", "*.csv")])
             if file_path_attributes:
                 Graph.load_attributes(file_path_attributes)
-                update_button.config(state=tk.NORMAL)
+                visualize_graph_button.config(state=tk.NORMAL)
+                print('Graph loaded successfully!')
                 messagebox.showinfo("Success", "Graph loaded successfully!")
             else:
+                print('No node attributes file selected.')
                 messagebox.showwarning("Warning", "No node attributes file selected.")
         except Exception as e:
+            print(f"Failed to load graph: {e}")
             messagebox.showerror("Error", f"Failed to load graph: {e}")
 
-
-def update_graph():
-    pos = Layout.options(Graph.G, selected_layout.get())
-    Graph.visualize_graph(pos)
+def visualize_graph():
+    Graph.visualize_graph(selected_layout.get())
 
 
 # Create the main window
@@ -52,9 +53,14 @@ layout_menu["values"] = Layout.layout_options
 layout_menu.grid(row=row, column=1, pady=10)
 row += 1
 
+# Create a button to open the color picker
+choose_button = tk.Button(window, text="Choose Node Color", command=Layout.choose_node_color)
+choose_button.grid(row=row, column=1, pady=10)
+row += 1
+
 # Create the update button
-update_button = ttk.Button(window, text='Update Graph', command=update_graph, state=tk.DISABLED)
-update_button.grid(row=row, columnspan=2, pady=10)
+visualize_graph_button = ttk.Button(window, text='Visualize Graph', command=visualize_graph , state=tk.DISABLED)
+visualize_graph_button.grid(row=row, columnspan=2, pady=10)
 row += 1
 
 # Run the main event loop

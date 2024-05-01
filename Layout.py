@@ -1,12 +1,32 @@
 import networkx as nx
 import pydot
 from networkx.drawing.nx_pydot import graphviz_layout
+from tkinter import colorchooser
 
 layout_options = ["Force-Directed (Fruchterman-Reingold)", "Hierarchical (Tree)",
                   "Hierarchical (Radial)", "Eigenvector", "Circular", "Shell", "Planar"]
+draw_vars = {
+        'pos': None,
+        'with_labels': True,
+        'node_size': 1000,
+        'node_color': '#ff0000',
+        'node_shape': 'o',
+        'width': 1,
+        'edge_color': '#0000ff',
+        'arrows': True,
+        'alpha': 1,
+}
 
 
-def options(G, selected_layout):
+def choose_node_color():
+    color_code = colorchooser.askcolor(title="Choose Nodes Color")
+    if color_code[1]:  # Check if a color was chosen
+        print('node_color: ', color_code[1])
+        draw_vars['node_color'] = color_code[1]
+
+
+def algorithm(G, selected_layout):
+    print('selected_layout: ', selected_layout)
     layout_func = selected_layout
     pos = None
 
@@ -25,4 +45,4 @@ def options(G, selected_layout):
     elif layout_func == "Planar":
         pos = nx.planar_layout(G)
 
-    return pos
+    draw_vars['pos'] = pos
