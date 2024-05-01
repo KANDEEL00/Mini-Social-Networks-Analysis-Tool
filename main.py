@@ -1,43 +1,20 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, StringVar
-import networkx as nx
 
-import matplotlib.pyplot as plt
-import pandas as pd
 
 import Layout
-
-# Create a global variable to store the graph
-G = None
+import Graph
 
 def load_graph():
     global G
     file_path_edges = filedialog.askopenfilename(title="Open Edges CSV File", filetypes=[("CSV Files", "*.csv")])
     if file_path_edges:
         try:
-            # Read edge CSV with pandas
-            df_edges = pd.read_csv(file_path_edges)
-            # Create graph based on selected type
-            if directed_var.get():
-                G = nx.DiGraph()
-            else:
-                G = nx.Graph()
-            G = nx.from_pandas_edgelist(df_edges, 'Source', 'Target')
-            G = nx.from_pandas_edgelist(df_edges, 'Source', 'Target', create_using=G)
-            print(G.edges())
+            Graph.load_edges(file_path_edges, directed_var)
             # Ask for node attributes CSV
             file_path_attributes = filedialog.askopenfilename(title="Open Nodes CSV File", filetypes=[("CSV Files", "*.csv")])
             if file_path_attributes:
-                # Read node attributes CSV with pandas
-                df_attributes = pd.read_csv(file_path_attributes)
-
-                # Add node attributes
-                for _, row in df_attributes.iterrows():
-                    node = row['ID']  # Adjusted to 'ID' column
-                    for column in df_attributes.columns:
-                        if column != 'ID':  # Adjusted to 'ID' column
-                            nx.set_node_attributes(G, {node: {column: row[column]}})
-                print(G.nodes(data=True))
+                Graph.load_attributes(file_path_attributes)
                 update_button.config(state=tk.NORMAL)
                 messagebox.showinfo("Success", "Graph loaded successfully!")
             else:
@@ -47,13 +24,8 @@ def load_graph():
 
 
 def update_graph():
-    pos = Layout.options(G, selected_layout.get())
-    plt.clf()
-    nx.draw(G, with_labels=True, pos=pos, node_color='lightblue', node_size=500)
-    plt.title('Graph Visualization')
-    fig = plt.gcf()
-    fig.canvas.manager.set_window_title('Graph Visualization')
-    fig.show()
+    pos = Layout.options(Graph.G, selected_layout.get())
+    Graph.visualize_graph(pos)
 
 
 # Create the main window
