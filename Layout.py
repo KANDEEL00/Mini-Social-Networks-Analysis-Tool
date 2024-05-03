@@ -14,8 +14,8 @@ draw_vars = {
         'width': 1,
         'edge_color': '#0000ff',
         'arrows': True,
-        'alpha': 1,
 }
+attribute_to_show = None
 
 
 def choose_node_color():
@@ -24,25 +24,38 @@ def choose_node_color():
         print('node_color: ', color_code[1])
         draw_vars['node_color'] = color_code[1]
 
+def choose_edge_color():
+    color_code = colorchooser.askcolor(title="Choose Edges Color")
+    if color_code[1]:  # Check if a color was chosen
+        print('edge_color: ', color_code[1])
+        draw_vars['edge_color'] = color_code[1]
 
-def algorithm(G, selected_layout):
+
+def algorithm(G, selected_layout, node_size, node_shape, edge_width, selected_label):
+    global attribute_to_show
     print('selected_layout: ', selected_layout)
-    layout_func = selected_layout
-    pos = None
+    print('node_size: ', node_size)
+    print('node_shape: ', node_shape)
+    print('edge_width: ', edge_width)
 
-    if layout_func == "Force-Directed (Fruchterman-Reingold)":
-        pos = nx.spring_layout(G)
-    elif layout_func == "Hierarchical (Tree)":
-        pos = graphviz_layout(G, prog='dot')
-    elif layout_func == "Hierarchical (Radial)":
-        pos = graphviz_layout(G, prog='twopi')
-    elif layout_func == "Eigenvector":
-        pos = nx.spectral_layout(G)
-    elif layout_func == "Circular":
-        pos = nx.circular_layout(G)
-    elif layout_func == "Shell":
-        pos = nx.shell_layout(G)
-    elif layout_func == "Planar":
-        pos = nx.planar_layout(G)
+    draw_vars['node_size'] = int(node_size)
+    draw_vars['node_shape'] = node_shape
+    draw_vars['width'] = int(edge_width)
+    attribute_to_show = selected_label
 
-    draw_vars['pos'] = pos
+    if selected_layout == "Force-Directed (Fruchterman-Reingold)":
+         draw_vars['pos'] = nx.spring_layout(G)
+    elif selected_layout == "Hierarchical (Tree)":
+         draw_vars['pos'] = graphviz_layout(G, prog='dot')
+    elif selected_layout == "Hierarchical (Radial)":
+         draw_vars['pos'] = graphviz_layout(G, prog='twopi')
+    elif selected_layout == "Eigenvector":
+         draw_vars['pos'] = nx.spectral_layout(G)
+    elif selected_layout == "Circular":
+         draw_vars['pos'] = nx.circular_layout(G)
+    elif selected_layout == "Shell":
+         draw_vars['pos'] = nx.shell_layout(G)
+    elif selected_layout == "Planar":
+         draw_vars['pos'] = nx.planar_layout(G)
+
+

@@ -50,10 +50,12 @@ def load_attributes(file_path_attributes):
 
 
 # Visualize the graph using the selected layout
-def visualize_graph(selected_layout):
-    Layout.algorithm(G, selected_layout)
+def visualize_graph():
     plt.clf()
-    nx.draw(G, **Layout.draw_vars)
+    label = nx.get_node_attributes(G, Layout.attribute_to_show)
+    if Layout.attribute_to_show == 'ID':
+        label=None
+    nx.draw(G, **Layout.draw_vars, labels=label)
     plt.title('Graph Visualization')
     fig = plt.gcf()
     fig.canvas.manager.set_window_title('Graph Visualization')
