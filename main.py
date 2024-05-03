@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, StringVar, Label, Entry
+
 import Layout
 import Graph
 
@@ -8,11 +9,13 @@ def load_graph():
     file_path_edges = filedialog.askopenfilename(title="Open Edges CSV File", filetypes=[("CSV Files", "*.csv")])
     if file_path_edges:
         try:
-            Graph.load_edges(file_path_edges, directed_var)
+            Graph.load_edges(file_path_edges, directed_var.get())
             file_path_attributes = filedialog.askopenfilename(title="Open Nodes CSV File", filetypes=[("CSV Files", "*.csv")])
             if file_path_attributes:
                 Graph.load_attributes(file_path_attributes)
+                Graph.filtered_graph = Graph.loaded_graph
                 metrics_button.config(state=tk.NORMAL)
+                filter_graph_button.config(state=tk.NORMAL)
                 visualize_graph_button.config(state=tk.NORMAL)
                 print('Graph loaded successfully!')
                 messagebox.showinfo("Success", "Graph loaded successfully!")
@@ -46,8 +49,13 @@ def show_degree_distribution(degree_dist):
     root.mainloop()
 
 
+def filter_graph():
+    import Filter
+    Filter.show_window()
+
+
 def visualize_graph():
-    Layout.algorithm(Graph.G, selected_layout.get(), node_size_entry.get(), selected_shape.get(), edge_width_entry.get(), selected_label.get())
+    Layout.algorithm(Graph.filtered_graph, selected_layout.get(), node_size_entry.get(), selected_shape.get(), edge_width_entry.get(), selected_label.get())
     Graph.visualize_graph()
 
 
@@ -124,11 +132,14 @@ lable_menu["values"] = ['ID','Class','Gender']
 lable_menu.grid(row=row, column=4, pady=10 , padx=10, sticky="W")
 row += 1
 
-
+# Create the update button
+filter_graph_button = ttk.Button(window, text='Filter Graph', command=filter_graph, state=tk.DISABLED)
+filter_graph_button.grid(row=row, columnspan=5, pady=10, padx=10)
+row += 1
 
 # Create the update button
 visualize_graph_button = ttk.Button(window, text='Visualize Graph', command=visualize_graph, state=tk.DISABLED)
-visualize_graph_button.grid(row=row, columnspan=2, pady=10, padx=10)
+visualize_graph_button.grid(row=row, columnspan=5, pady=10, padx=10)
 row += 1
 
 # Run the main event loop
