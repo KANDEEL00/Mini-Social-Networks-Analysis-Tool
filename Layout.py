@@ -8,11 +8,11 @@ layout_options = ["Force-Directed (Fruchterman-Reingold)", "Hierarchical (Tree)"
 draw_vars = {
     'pos': None,
     'with_labels': True,
-    'node_size': 1000,
-    'node_color': '#ff0000',
+    'node_size': 500,
+    'node_color': '#cfecf7',
     'node_shape': 'o',
     'width': 1,
-    'edge_color': '#0000ff',
+    'edge_color': '#000000',
     'arrows': True,
 }
 attribute_to_show = None
