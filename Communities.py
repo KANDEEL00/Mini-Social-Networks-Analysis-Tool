@@ -7,6 +7,8 @@ import Graph
 
 
 G = None
+louvain_comm = None
+girvan_newman_comm = None
 def get_graph():
     global G
     G = Graph.filtered_graph
@@ -23,9 +25,12 @@ comparison = {
 }
 
 def run():
+    global louvain_comm, girvan_newman_comm
     get_graph()
-    louvain()
-    girvan_newman()
+    if louvain_comm is None:
+        louvain_comm = louvain()
+    if girvan_newman_comm is None:
+        girvan_newman_comm = girvan_newman()
     create_gui()
 
 def louvain():
@@ -33,6 +38,7 @@ def louvain():
     algo_name = "Louvain"
     comparison[algo_name]['Number of Communities'] = len(set.union(*communities))
     compare_communities(communities, algo_name)
+    return communities
 
 
 def girvan_newman():
@@ -41,6 +47,7 @@ def girvan_newman():
     algo_name = "Girvan-Newman"
     comparison[algo_name]['Number of Communities'] = len(communities)
     compare_communities(communities, algo_name)
+    return communities
 
 
 def compare_communities(communities, algo_name):
@@ -64,7 +71,20 @@ def create_gui():
 
     tree.pack(expand=True, fill="both")
 
-    root.mainloop()
 
+
+def draw_both_communities():
+    draw_communities(G, louvain_comm, "Louvain")
+    draw_communities(G, girvan_newman_comm, "Girvan-Newman")
+def draw_communities(G, communities, algo_name):
+    colors = {}
+    for i, community in enumerate(communities):
+        for node in community:
+            colors[node] = i
+    node_colors = [colors[n] for n in G.nodes]
+    pos = nx.spring_layout(G)
+    nx.draw(G,pos, node_color=node_colors)
+    plt.title(algo_name + " Communities")
+    plt.show()
 
 

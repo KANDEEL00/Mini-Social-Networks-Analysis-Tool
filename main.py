@@ -48,14 +48,18 @@ def show_degree_distribution(degree_dist):
     for degree, freq in enumerate(degree_dist):
         tree.insert("", tk.END, text="", values=(degree, freq))
     tree.pack(expand=True, fill="both")
-    root.mainloop()
 
 
 def filter_graph():
     Filter.show_window()
 
-def community():
+def community_detection():
     Communities.run()
+    draw_comm_graph_button.config(state=tk.NORMAL)
+
+
+def draw_communities():
+    Communities.draw_both_communities()
 
 def visualize_graph():
     Layout.algorithm(Graph.filtered_graph, selected_layout.get(), node_size_entry.get(), selected_shape.get(), edge_width_entry.get(), selected_label.get())
@@ -138,10 +142,12 @@ row += 1
 # Create the update button
 filter_graph_button = ttk.Button(window, text='Filter Graph', command=filter_graph, state=tk.DISABLED)
 filter_graph_button.grid(row=row, column=1, pady=10, padx=10)
-comm_graph_button = ttk.Button(window, text='Community', command=community, state=tk.DISABLED)
+comm_graph_button = ttk.Button(window, text='Community Detection \n     & Comparison', command=community_detection, state=tk.DISABLED)
 comm_graph_button.grid(row=row, column=2, pady=10, padx=10)
+draw_comm_graph_button = ttk.Button(window, text='Graph Partitioning', command=draw_communities, state=tk.DISABLED)
+draw_comm_graph_button.grid(row=row, column=3, pady=10, padx=10)
 visualize_graph_button = ttk.Button(window, text='Visualize Graph', command=visualize_graph, state=tk.DISABLED)
-visualize_graph_button.grid(row=row, column=3, pady=10, padx=10)
+visualize_graph_button.grid(row=row, column=4, pady=10, padx=10)
 row += 1
 
 # Run the main event loop
