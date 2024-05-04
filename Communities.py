@@ -11,50 +11,45 @@ def get_graph():
     global G
     G = Graph.filtered_graph
 
-compare_communities = {
+comparison = {
     "Louvain": {
-        "Number of Communities": 242,
-        "Modularity": 0.284035
+        "Number of Communities": -1,
+        "Modularity": -1
     },
     "Girvan-Newman": {
-        "Number of Communities": 2,
-        "Modularity": -0.000004
+        "Number of Communities": -1,
+        "Modularity": -1
     }
 }
 
 def run():
     get_graph()
-    louvain_comm = louvain()
-    girvan_newman_comm = girvan_newman()
-    # draw_communities(G, louvain_comm)
-    # draw_communities(G, girvan_newman_comm)
+    louvain()
+    girvan_newman()
+    create_gui()
 
 def louvain():
     communities = community.louvain_communities(G)
-    num_communities = len(set.union(*communities))
-    compare_communities(communities, "Louvain", num_communities)
-    return communities
+    algo_name = "Louvain"
+    comparison[algo_name]['Number of Communities'] = len(set.union(*communities))
+    compare_communities(communities, algo_name)
 
 
 def girvan_newman():
     girvan = community.girvan_newman(G)
-    #tuple(sorted(c) for c in next(girvan))
     communities = list(next(girvan))
-    num_communities = len(communities)
-    compare_communities(communities, "Girvan-Newman", num_communities)
-    return communities
+    algo_name = "Girvan-Newman"
+    comparison[algo_name]['Number of Communities'] = len(communities)
+    compare_communities(communities, algo_name)
 
 
-def compare_communities(communities, algo_name, num_communities):
-    print(f"{algo_name}:")
-    print(f"\tNumber of Communities: {num_communities}")
-    try:
-        modularity = community.modularity(G, communities)
-        print(f"\tModularity: {modularity:.6f}")
-    except:
-        print("\tModularity: Not applicable")
+def compare_communities(communities, algo_name):
+    comparison[algo_name]['Modularity'] = community.modularity(G, communities)
 
-def create_gui(data):
+def create_gui():
+    data = comparison
+    print("    Louvain    :",data["Louvain"])
+    print(" Girvan-Newman :",data["Girvan-Newman"])
     root = tk.Tk()
     root.title("Community Detection Comparison")
 
@@ -70,16 +65,6 @@ def create_gui(data):
     tree.pack(expand=True, fill="both")
 
     root.mainloop()
-
-def draw_communities(G, communities):
-    colors = {}
-    for i, community in enumerate(communities):
-        for node in community:
-            colors[node] = i
-    node_colors = [colors[n] for n in G.nodes]
-    pos = nx.spring_layout(G)
-    nx.draw(G,pos, node_color=node_colors)
-    plt.show()
 
 
 
