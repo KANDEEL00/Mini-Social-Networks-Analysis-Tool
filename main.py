@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, StringVar, Label, Entry
-
 import Layout
 import Graph
+import Filter
+import Communities
 
 
 def load_graph():
@@ -16,6 +17,7 @@ def load_graph():
                 Graph.filtered_graph = Graph.loaded_graph
                 metrics_button.config(state=tk.NORMAL)
                 filter_graph_button.config(state=tk.NORMAL)
+                comm_graph_button.config(state=tk.NORMAL)
                 visualize_graph_button.config(state=tk.NORMAL)
                 print('Graph loaded successfully!')
                 messagebox.showinfo("Success", "Graph loaded successfully!")
@@ -50,9 +52,10 @@ def show_degree_distribution(degree_dist):
 
 
 def filter_graph():
-    import Filter
     Filter.show_window()
 
+def community():
+    Communities.run()
 
 def visualize_graph():
     Layout.algorithm(Graph.filtered_graph, selected_layout.get(), node_size_entry.get(), selected_shape.get(), edge_width_entry.get(), selected_label.get())
@@ -134,12 +137,11 @@ row += 1
 
 # Create the update button
 filter_graph_button = ttk.Button(window, text='Filter Graph', command=filter_graph, state=tk.DISABLED)
-filter_graph_button.grid(row=row, columnspan=5, pady=10, padx=10)
-row += 1
-
-# Create the update button
+filter_graph_button.grid(row=row, column=1, pady=10, padx=10)
+comm_graph_button = ttk.Button(window, text='Community', command=community, state=tk.DISABLED)
+comm_graph_button.grid(row=row, column=2, pady=10, padx=10)
 visualize_graph_button = ttk.Button(window, text='Visualize Graph', command=visualize_graph, state=tk.DISABLED)
-visualize_graph_button.grid(row=row, columnspan=5, pady=10, padx=10)
+visualize_graph_button.grid(row=row, column=3, pady=10, padx=10)
 row += 1
 
 # Run the main event loop

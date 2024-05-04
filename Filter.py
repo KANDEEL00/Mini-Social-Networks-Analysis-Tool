@@ -4,15 +4,17 @@ import networkx as nx
 
 import Graph
 
-G = Graph.loaded_graph
-
-# Calculate centrality measures
-centrality_measures = {
-    'degree': nx.degree_centrality(G),
-    'betweenness': nx.betweenness_centrality(G),
-    'closeness': nx.closeness_centrality(G)
-}
-
+G = None
+centrality_measures = {}
+def get_graph():
+    global G, centrality_measures
+    G = Graph.filtered_graph
+    # Calculate centrality measures
+    centrality_measures = {
+        'degree': nx.degree_centrality(G),
+        'betweenness': nx.betweenness_centrality(G),
+        'closeness': nx.closeness_centrality(G)
+    }
 
 def filter_graph(class_combobox, gender_combobox, centrality_combobox, centrality_scale):
     print()
@@ -55,6 +57,7 @@ def filter_graph(class_combobox, gender_combobox, centrality_combobox, centralit
 
 
 def show_window():
+    get_graph()
     # Create the main Tkinter window
     root = tk.Tk()
     root.title("Graph Filter GUI")
