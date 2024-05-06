@@ -16,6 +16,7 @@ def load_graph():
                 Graph.load_attributes(file_path_attributes)
                 Graph.filtered_graph = Graph.loaded_graph
                 metrics_button.config(state=tk.NORMAL)
+                link_analysis_button.config(state=tk.NORMAL)
                 filter_graph_button.config(state=tk.NORMAL)
                 comm_graph_button.config(state=tk.NORMAL)
                 visualize_graph_button.config(state=tk.NORMAL)
@@ -27,40 +28,25 @@ def load_graph():
         except Exception as e:
             print(f"Failed to load graph: {e}")
             messagebox.showerror("Error", f"Failed to load graph: {e}")
+
+
 def analyze_metrics():
     metrics = Graph.analyze_metrics()
     messagebox.showinfo("Graph Metrics", f"Number of nodes: {metrics['num_nodes']}\n"
                                                       f"Number of edges: {metrics['num_edges']}\n"
                                                       f"Average clustering coefficient: { metrics['clustering_coefficient']}\n"
                                                       f"Average path length: {metrics['average_path_length']}")
-    show_degree_distribution(metrics['degree_distribution'])
 
-
-def show_degree_distribution(degree_dist):
-    root = tk.Tk()
-    root.title("Degree Distribution")
-    tree = ttk.Treeview(root)
-    tree["columns"] = ("Degree", "Frequency")
-    # Define headings
-    tree.heading("#0", text="", anchor=tk.W)
-    tree.heading("Degree", text="Degree", anchor=tk.CENTER)
-    tree.heading("Frequency", text="Frequency", anchor=tk.CENTER)
-    for degree, freq in enumerate(degree_dist):
-        tree.insert("", tk.END, text="", values=(degree, freq))
-    tree.pack(expand=True, fill="both")
-
-
+def link_analysis():
+    Graph.link_analisys()
 def filter_graph():
     Filter.show_window()
-
 def community_detection():
     Communities.run()
     draw_comm_graph_button.config(state=tk.NORMAL)
 
-
 def draw_communities():
     Communities.draw_both_communities()
-
 def visualize_graph():
     Layout.algorithm(Graph.filtered_graph, selected_layout.get(), node_size_entry.get(), selected_shape.get(), edge_width_entry.get(), selected_label.get())
     Graph.visualize_graph()
@@ -68,7 +54,7 @@ def visualize_graph():
 
 # Create the main window
 window = tk.Tk()
-window.geometry("800x300")
+window.geometry("800x225")
 window.title('Mini Social Networks Analysis Tool')
 row = 0
 
@@ -140,6 +126,8 @@ lable_menu.grid(row=row, column=4, pady=10 , padx=10, sticky="W")
 row += 1
 
 # Create the update button
+link_analysis_button = ttk.Button(window, text='Link Analysis', command=link_analysis, state=tk.DISABLED)
+link_analysis_button.grid(row=row, column=0, pady=10, padx=10)
 filter_graph_button = ttk.Button(window, text='Filter Graph', command=filter_graph, state=tk.DISABLED)
 filter_graph_button.grid(row=row, column=1, pady=10, padx=10)
 comm_graph_button = ttk.Button(window, text='Community Detection \n     & Comparison', command=community_detection, state=tk.DISABLED)

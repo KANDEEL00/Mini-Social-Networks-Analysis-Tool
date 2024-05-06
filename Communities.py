@@ -83,13 +83,12 @@ def show_condutance_table(conductance_list, algo_name):
     root = tk.Tk()
     root.title(f"{algo_name} Conductance Values")
     tree = ttk.Treeview(root)
-    tree["columns"] = ("Community", "Conductance")
+    tree["columns"] = "Conductance"
     # Define headings
-    tree.heading("#0", text="", anchor=tk.W)
-    tree.heading("Community", text="Community", anchor=tk.CENTER)
+    tree.heading("#0", text="Community", anchor=tk.CENTER)
     tree.heading("Conductance", text="Conductance", anchor=tk.CENTER)
     for community, conductance in enumerate(conductance_list):
-        tree.insert("", tk.END, text=algo_name, values=(community, conductance))
+        tree.insert("", tk.END, text=community, values=conductance)
     tree.pack(expand=True, fill="both")
 
 def show_comparison():

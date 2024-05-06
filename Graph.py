@@ -1,7 +1,8 @@
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import tkinter as tk
+from tkinter import ttk
 import Layout
 
 # Create a global variable to store the graph
@@ -91,7 +92,36 @@ def analyze_metrics():
                 f"Average clustering coefficient: { metrics['clustering_coefficient']}\n"
                 f"Average path length: {metrics['average_path_length']}")
     print("Graph Metrics\n", output)
+    show_degree_distribution(metrics['degree_distribution'])
     print("Degree Distribution")
     for index, value in enumerate(metrics['degree_distribution']):
         print(f"Degree {index}: {value}")
     return metrics
+
+def show_degree_distribution(degree_dist):
+    root = tk.Tk()
+    root.title("Degree Distribution")
+    tree = ttk.Treeview(root)
+    tree["columns"] = "Frequency"
+    # Define headings
+    tree.heading("#0", text="Degree", anchor=tk.CENTER)
+    tree.heading("Frequency", text="Frequency", anchor=tk.CENTER)
+    for degree, freq in enumerate(degree_dist):
+        tree.insert("", tk.END, text=degree, values=freq)
+    tree.pack(expand=True, fill="both")
+
+def link_analisys():
+    G = filtered_graph
+    pagerank = nx.pagerank(G)
+    betweenness_centrality = nx.betweenness_centrality(G)
+    root = tk.Tk()
+    root.title("Link Analysis Results")
+    tree = ttk.Treeview(root)
+    tree["columns"] = ("Page Rank", "Betweenness Centrality")
+    tree.heading("#0", text="Node")
+    tree.heading("Page Rank", text="Page Rank")
+    tree.heading("Betweenness Centrality", text="Betweenness Centrality")
+    for index, node in enumerate(G.nodes()):
+        tree.insert("", "end", text=node, values=(pagerank[node], betweenness_centrality[node]))
+    tree.pack(expand=True, fill="both")
+    root.mainloop()
