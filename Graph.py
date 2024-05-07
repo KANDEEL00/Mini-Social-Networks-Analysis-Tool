@@ -2,7 +2,7 @@ import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk,messagebox
 import Layout
 
 # Create a global variable to store the graph
@@ -112,16 +112,24 @@ def show_degree_distribution(degree_dist):
 
 def link_analisys():
     G = filtered_graph
-    pagerank = nx.pagerank(G)
-    betweenness_centrality = nx.betweenness_centrality(G)
-    root = tk.Tk()
-    root.title("Link Analysis Results")
-    tree = ttk.Treeview(root)
-    tree["columns"] = ("Page Rank", "Betweenness Centrality")
-    tree.heading("#0", text="Node")
-    tree.heading("Page Rank", text="Page Rank")
-    tree.heading("Betweenness Centrality", text="Betweenness Centrality")
-    for index, node in enumerate(G.nodes()):
-        tree.insert("", "end", text=node, values=(pagerank[node], betweenness_centrality[node]))
-    tree.pack(expand=True, fill="both")
-    root.mainloop()
+
+    if nx.is_directed(G):
+        print("Directed Graph")
+        pagerank = nx.pagerank(G)
+        betweenness_centrality = nx.betweenness_centrality(G)
+        root = tk.Tk()
+        root.title("Link Analysis Results")
+        tree = ttk.Treeview(root)
+        tree["columns"] = ("PageRank", "Betweenness Centrality")
+        tree.heading("#0", text="Node")
+        tree.heading("PageRank", text="PageRank")
+        tree.heading("Betweenness Centrality", text="Betweenness Centrality")
+        for index, node in enumerate(G.nodes()):
+            tree.insert("", "end", text=node, values=(pagerank[node], betweenness_centrality[node]))
+        tree.pack(expand=True, fill="both")
+    else:
+        print("Undirected Graph")
+        message = "The graph is undirected. The following metrics are not applicable.\nPlease load it as directed graph."
+        messagebox.showinfo("Info", message)
+        print(message)
+        return None

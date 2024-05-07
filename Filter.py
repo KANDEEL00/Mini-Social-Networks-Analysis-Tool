@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, Entry
 import networkx as nx
 
 import Graph
@@ -11,9 +11,9 @@ def get_graph():
     G = Graph.filtered_graph
     # Calculate centrality measures
     centrality_measures = {
-        'degree': nx.degree_centrality(G),
-        'betweenness': nx.betweenness_centrality(G),
-        'closeness': nx.closeness_centrality(G)
+        'Degree': nx.degree_centrality(G),
+        'Betweenness': nx.betweenness_centrality(G),
+        'Closeness': nx.closeness_centrality(G)
     }
 
 def filter_graph(class_combobox, gender_combobox, centrality_combobox, centrality_scale):
@@ -63,7 +63,7 @@ def show_window():
     root.title("Graph Filter GUI")
 
     # Class selection
-    class_label = ttk.Label(root, text="Select Class:")
+    class_label = ttk.Label(root, text="Class:")
     class_label.grid(row=0, column=0, padx=10, pady=5)
     class_list = ['Any'] + list(Graph.nodes_df['Class'].unique())
     class_combobox = ttk.Combobox(root, values=class_list)
@@ -71,14 +71,14 @@ def show_window():
     class_combobox.set('Any')
 
     # Gender selection
-    gender_label = ttk.Label(root, text="Select Gender:")
+    gender_label = ttk.Label(root, text="Gender:")
     gender_label.grid(row=1, column=0, padx=10, pady=5)
     gender_combobox = ttk.Combobox(root, values=['Any', 'M', 'F', 'Unknown'])
     gender_combobox.grid(row=1, column=1, padx=10, pady=5)
     gender_combobox.set('Any')
 
     # Centrality selection
-    centrality_label = ttk.Label(root, text="Select Centrality Measure:")
+    centrality_label = ttk.Label(root, text="Centrality Measurement:")
     centrality_label.grid(row=2, column=0, padx=10, pady=5)
     centrality_combobox = ttk.Combobox(root, values=list(centrality_measures.keys()))
     centrality_combobox.grid(row=2, column=1, padx=10, pady=5)
@@ -87,7 +87,9 @@ def show_window():
     # Centrality threshold
     centrality_scale_label = ttk.Label(root, text="Centrality Threshold:")
     centrality_scale_label.grid(row=3, column=0, padx=10, pady=5)
-    centrality_scale = ttk.Scale(root, from_=0, to=1, length=200, orient="horizontal")
+
+    centrality_scale = Entry(root)
+    centrality_scale.insert(0, 0.1)
     centrality_scale.grid(row=3, column=1, padx=10, pady=5)
 
     # Button to update the graph

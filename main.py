@@ -117,7 +117,7 @@ edge_color_button.grid(row=row, column=2, pady=10, padx=10, sticky="W")
 # Node Label
 selected_label = StringVar(window)
 selected_label.set('ID')
-label_label = ttk.Label(window, text="Node Shape:  ")
+label_label = ttk.Label(window, text="Node Label:  ")
 label_label.grid(row=row, column=3, pady=10 , padx=10, sticky="E")
 # Layout dropdown
 lable_menu = ttk.Combobox(window, textvariable=selected_label, state="readonly")
